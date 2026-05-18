@@ -8,6 +8,12 @@ Rails.application.routes.draw do
   resources :products do
     resources :subscriptions, only: [:index, :create]
   end
+
+  namespace :admin do #Tất cả các URL bên trong sẽ tự động được thêm tiền tố /admin ở đầu
+    resources :users, only: [] do # Chỉ định resource user nhưng không tạo các route CRUD tiêu chuẩn
+      resources :roles, controller: 'user_roles', only: [:create, :destroy] # Tạo nested route cho roles
+    end
+  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

@@ -3,7 +3,7 @@
 # Hỗ trợ quản lý Server, Database Migrations, Console và các lệnh Docker tiện ích.
 # ==============================================================================
 
-.PHONY: dev server console migration migrate rollback db-status add-field remove-field db-reset test clean help db-up db-down db-logs db-setup scaffold
+.PHONY: dev server console migration migrate rollback db-status add-field remove-field db-reset test clean help db-up db-down db-logs db-setup scaffold seed
 
 # Mặc định hiển thị danh sách các lệnh
 help:
@@ -31,6 +31,7 @@ help:
 	@echo "  make db-setup            - Khởi động DB và chạy rails db:prepare lần đầu"
 	@echo "=============================================================================="
 	@echo "Ví dụ:"
+	@echo "  make seed                - Chạy seed database"
 	@echo "  make scaffold name=Book args=\"title:string price:decimal author:string\""
 	@echo "  make scaffold name=Product args=\"name:string price:decimal\" opts=\"--api\""
 	@echo "  make migration name=CreateUsers"
@@ -48,6 +49,14 @@ dev server:
 console c:
 	@echo "💻 Đang mở Rails console..."
 	@bundle exec rails console
+
+# Create Model
+model:
+ifndef name
+	$(error ❌ Thiếu tham số 'name'. Ví dụ: make model name=Role args="name:string description:string")
+endif
+	@echo "🏗️  Đang tạo Model cho: $(name)..."
+	@bundle exec rails g model $(name) $(args)
 
 # Tạo Scaffold (Model, Controller, View, Migration)
 scaffold:
@@ -150,3 +159,8 @@ mailer ${name}:
 mailer-view ${name} ${action}:
 	@echo "📧 Tạo mailer view..."
 	@bundle exec rails g mailer ${name} ${action}
+
+# Run seeders
+seed:
+	@echo "🌱 Đang chạy seed database..."
+	@bundle exec rails db:seed

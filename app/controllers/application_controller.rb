@@ -21,4 +21,16 @@ class ApplicationController < ActionController::Base
       render_error(message: "Token không hợp lệ hoặc đã hết hạn", status: :unauthorized)
     end
   end
+
+  def require_admin
+    unless @current_user.admin?
+      render_error(message: "Chỉ có admin mới có quyền truy cập", status: :unauthorized)
+    end
+  end
+
+  def require_worker
+    unless @current_user.worker?
+      render_error(message: "Chỉ có worker mới có quyền truy cập", status: :unauthorized)
+    end
+  end
 end
