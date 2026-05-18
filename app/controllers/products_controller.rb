@@ -1,12 +1,16 @@
 class ProductsController < ApplicationController
+  include Pagy::Method
   include ApiResponse
 
-  before_action :set_product, only: %i[ show update destroy ]
+  before_action :authorize_request, except: %i[index show]
+  before_action :set_product, only: %i[show update destroy]
 
   # GET /products
   def index
-    @products = Product.all
-    render_paginated(@products, message: "Lấy danh sách sản phẩm thành công")
+    limit_items = params.fetch(:limit, 20).to_i
+    @pagy, @products = pagy(Product.all, limit: limit_items)
+
+    render_paginated(@pagy, @products, message: "Lấy danh sách sản phẩm thành công")
   end
 
   # GET /products/1

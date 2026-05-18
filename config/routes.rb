@@ -1,6 +1,13 @@
 Rails.application.routes.draw do
+  # Định nghĩa route cho việc đăng ký tài khoản
+  post '/register', to: 'users#create'
+  # Định nghĩa route cho việc đăng nhập (POST request)
+  post '/login', to: 'sessions#create'
+
   resources :subscribers
-  resources :products
+  resources :products do
+    resources :subscriptions, only: [:index, :create]
+  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

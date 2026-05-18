@@ -30,25 +30,18 @@ module ApiResponse
   end
 
   # API pagination (Phân trang tự động dựa trên ActiveRecord Relation)
-  def render_paginated(scope, message: "Success", status: :ok)
-    page = (params[:page] || 1).to_i
-    per_page = (params[:per_page] || 10).to_i
-    page = 1 if page < 1
-    per_page = 10 if per_page < 1
-
-    total_count = scope.count
-    total_pages = (total_count.to_f / per_page).ceil
-    records = scope.offset((page - 1) * per_page).limit(per_page)
-
+  def render_paginated(pagy_objects, data, message: "Success", status: :ok)
     render json: {
       success: true,
       message: message,
-      data: records,
+      data: data,
       meta: {
-        current_page: page,
-        per_page: per_page,
-        total_pages: total_pages,
-        total_count: total_count
+        current_page: pagy_objects.page,
+        limit: pagy_objects.limit,
+        pages: pagy_objects.pages,
+        total: pagy_objects.count,
+        next_page: pagy_objects.next,
+        prev_page: pagy_objects.previous
       },
       errors: nil
     }, status: status

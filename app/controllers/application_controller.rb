@@ -1,7 +1,24 @@
 class ApplicationController < ActionController::Base
-  # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
-  allow_browser versions: :modern
+  protect_from_forgery with: :null_session
+  include Pagy::Method
+  include ApiResponse
 
-  # Changes to the importmap will invalidate the etag for HTML responses
-  stale_when_importmap_changes
+  def authorize_request
+    header = request.headers["Authorization"]
+    header = header.split(" ").last if header
+
+    if header.blank?
+      render_error(message: "Yêu cầu cung cấp token xác thực", status: :unauthorized)
+      return
+    end
+
+    begin
+      @decoded = JsonWebToken.decode(header)
+      @current_user = User.find(@decoded[:user_id])
+    rescue ActiveRecord::RecordNotFound => e
+      render_error(message: "Không tìm thấy người dùng", status: :unauthorized)
+    rescue JWT::DecodeError => e
+      render_error(message: "Token không hợp lệ hoặc đã hết hạn", status: :unauthorized)
+    end
+  end
 end

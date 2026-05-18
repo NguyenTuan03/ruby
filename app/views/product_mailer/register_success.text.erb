@@ -1,0 +1,12 @@
+🎉 Đăng Ký Nhận Tin Thành Công!
+
+Xin chào <%= @subscriber.email %>,
+
+Chúc mừng bạn đã đăng ký nhận thông báo thành công cho sản phẩm của chúng tôi. Chúng tôi sẽ gửi cho bạn những cập nhật mới nhất về sản phẩm này ngay khi có tin tức mới!
+
+Sản phẩm đăng ký:
+- Tên sản phẩm: <%= @product.name %>
+- Giá: <%= number_to_currency(@product.price, unit: "đ", precision: 0, format: "%n %u") %>
+
+Trân trọng,
+Đội ngũ Cửa hàng

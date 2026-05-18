@@ -1,13 +1,20 @@
 class SubscribersController < ApplicationController
+  include Pagy::Method
+  include ApiResponse
+
   before_action :set_subscriber, only: %i[ show update destroy ]
 
   # GET /subscribers or /subscribers.json
   def index
-    @subscribers = Subscriber.all
+    limit_items = params.fetch(:limit, 20).to_i
+    @pagy, @subscribers = pagy(Subscriber.all, limit: limit_items)
+
+    render_paginated(@pagy, @subscribers, message: "Lấy danh sách người đăng ký thành công")
   end
 
   # GET /subscribers/1 or /subscribers/1.json
   def show
+    render_success(data: @subscriber, message: "Lấy thông tin người đăng ký thành công")
   end
 
   # POST /subscribers or /subscribers.json

@@ -141,3 +141,12 @@ db-setup: db-up
 	@echo "⚙️  Đang thiết lập cơ sở dữ liệu Rails..."
 	@sleep 3
 	@bundle exec rails db:prepare
+
+# Create mailers for sending email
+mailer ${name}:
+	@echo "📧 Tạo mailer..."
+	@bundle exec rails g mailer ${name}
+
+mailer-view ${name} ${action}:
+	@echo "📧 Tạo mailer view..."
+	@bundle exec rails g mailer ${name} ${action}
