@@ -9,7 +9,16 @@ class ProductsController < ApplicationController
   # GET /products
   def index
     limit_items = params.fetch(:limit, 20).to_i
-    @pagy, @products = pagy(Product.all, limit: limit_items)
+    page = params.fetch(:page, 1).to_i
+
+    # 1. Kết hợp cache key với phiên bản của bảng Product để tự động xóa cache khi dữ liệu thay đổi
+    cache_key = "products/page-#{page}-limit-#{limit_items}-#{Product.all.cache_key_with_version}"
+
+    # 2. Caching Pagy metadata và ép thực thi câu lệnh SQL (.to_a) ngay trong block
+    @pagy, @products = Rails.cache.fetch(cache_key, expires_in: 12.hours) do
+      pagy_instance, records = pagy(Product.all, limit: limit_items)
+      [pagy_instance, records.to_a]
+    end
 
     render_paginated(@pagy, @products, message: "Lấy danh sách sản phẩm thành công")
   end
