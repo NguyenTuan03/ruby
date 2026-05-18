@@ -4,6 +4,18 @@ class Admin::UserRolesController < ApplicationController
   before_action :authorize_request
   before_action :require_admin
   
+  # GET /admin/users/:user_id/roles
+  def index
+    target_user = User.find(params[:user_id])
+    # Lấy tất cả các role của user
+    roles = target_user.roles.pluck(:name)
+    # Trả về JSON danh sách các role
+    render_success(message: "Danh sách roles của #{target_user.email}", data: roles)
+    
+    rescue ActiveRecord::RecordNotFound
+      render_error(message: "Không tìm thấy User tương ứng", status: :not_found)
+  end
+
   # POST /admin/users/:user_id/roles
   def create
     target_user = User.find(params[:user_id])

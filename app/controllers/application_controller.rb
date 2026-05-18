@@ -23,14 +23,16 @@ class ApplicationController < ActionController::Base
   end
 
   def require_admin
-    unless @current_user.admin?
-      render_error(message: "Chỉ có admin mới có quyền truy cập", status: :unauthorized)
+    if @current_user.blank? || !@current_user.admin?
+      render_error(message: "Chỉ có admin mới có quyền truy cập", status: :forbidden)
+      return
     end
   end
 
   def require_worker
-    unless @current_user.worker?
-      render_error(message: "Chỉ có worker mới có quyền truy cập", status: :unauthorized)
+    if @current_user.blank? || !@current_user.worker?
+      render_error(message: "Chỉ có worker mới có quyền truy cập", status: :forbidden)
+      return
     end
   end
 end

@@ -3,6 +3,7 @@ class ProductsController < ApplicationController
   include ApiResponse
 
   before_action :authorize_request, except: %i[index show]
+  before_action :require_worker, only: %i[create update destroy]
   before_action :set_product, only: %i[show update destroy]
 
   # GET /products

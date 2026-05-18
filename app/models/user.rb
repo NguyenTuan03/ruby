@@ -1,6 +1,9 @@
 class User < ApplicationRecord
   has_secure_password
 
+  has_many :user_roles, dependent: :destroy
+  has_many :roles, through: :user_roles
+
   validates :email, presence: true, uniqueness: true
   validates :password, presence: true
 

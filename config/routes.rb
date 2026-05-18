@@ -11,7 +11,7 @@ Rails.application.routes.draw do
 
   namespace :admin do #Tất cả các URL bên trong sẽ tự động được thêm tiền tố /admin ở đầu
     resources :users, only: [] do # Chỉ định resource user nhưng không tạo các route CRUD tiêu chuẩn
-      resources :roles, controller: 'user_roles', only: [:create, :destroy] # Tạo nested route cho roles
+      resources :roles, controller: 'user_roles', only: [:index, :create, :destroy] # Tạo nested route cho roles
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
