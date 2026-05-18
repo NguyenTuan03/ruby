@@ -69,3 +69,5 @@ end
 
 gem "bcrypt", "~> 3.1"
 gem "jwt", "~> 3.2"
+
+gem "bullet", "~> 8.1", group: :development

@@ -6,9 +6,9 @@ class Admin::UserRolesController < ApplicationController
   
   # GET /admin/users/:user_id/roles
   def index
-    target_user = User.find(params[:user_id])
+    target_user = User.includes(:roles).find(params[:user_id])
     # Lấy tất cả các role của user
-    roles = target_user.roles.pluck(:name)
+    roles = target_user.roles.map(&:name)
     # Trả về JSON danh sách các role
     render_success(message: "Danh sách roles của #{target_user.email}", data: roles)
     
