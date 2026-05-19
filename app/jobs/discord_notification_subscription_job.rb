@@ -4,9 +4,8 @@ require "uri"
 class DiscordNotificationSubscriptionJob < ApplicationJob
   queue_as :default
 
-  DISCORD_URL = "https://discord.com/api/webhooks/1506121895555109026/ZFqctPAkeG1cqGz8wVlqwIalfbGf7HmJHPqOBNrTqqcZXeXcF51huYgRgwMsANMusbfm"
-  # Nên đưa URL này vào file .env trong thực tế để bảo mật
-  DISCORD_WEBHOOK_URL = DISCORD_URL.freeze
+  # Đọc Webhook URL từ file .env để bảo mật thông tin nhạy cảm
+  DISCORD_WEBHOOK_URL = ENV["DISCORD_WEBHOOK_URL"].freeze
 
   def perform(email, product_name)
     # Đây là format chuẩn mà Discord yêu cầu
