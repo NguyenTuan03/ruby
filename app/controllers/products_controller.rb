@@ -33,6 +33,10 @@ class ProductsController < ApplicationController
     @product = Product.new(product_params)
 
     if @product.save
+      # Call background job để gửi thông báo Webhook sang Discord sau khi sản phẩm được tạo thành công
+      # Kích hoạt Job gửi Webhook sang Discord chạy nền SAU KHI lưu DB thành công
+      DiscordNotificationJob.perform_later(@product.name, @product.price, @product.inventory)
+
       render_success(data: @product, message: "Tạo sản phẩm thành công", status: :created)
     else
       render_error(message: "Không thể tạo sản phẩm", errors: @product.errors.full_messages, status: :unprocessable_entity)

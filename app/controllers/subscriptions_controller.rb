@@ -26,13 +26,14 @@ class SubscriptionsController < ApplicationController
     ActiveRecord::Base.transaction do
       # Find or create subscriber
       subscriber = Subscriber.find_or_create_by!(email: email)
-      
+
       subscription = @product.subscriptions.new(subscriber: subscriber)
 
       # Dùng save! để kích hoạt ActiveRecord::RecordInvalid ngoại lệ khi validate thất bại,
       # giúp rollback toàn bộ transaction tự động.
       subscription.save!
-      
+      DiscordNotificationSubscriptionJob.perform_later(subscriber.email, @product.name)
+
       # Gửi email thông báo đăng ký thành công (bằng deliver_later để chạy bất đồng bộ)
       ProductMailer.with(product: @product, subscriber: subscriber).register_success.deliver_later
 
@@ -41,10 +42,10 @@ class SubscriptionsController < ApplicationController
 
   rescue ActiveRecord::RecordInvalid => e
     # Bắt lỗi nếu find_or_create_by! hoặc save! thất bại (ví dụ: email sai định dạng hoặc trùng lặp đăng ký)
-    render_error(message: "Lỗi dữ liệu", errors: [e.message], status: :unprocessable_entity)
+    render_error(message: "Lỗi dữ liệu", errors: [ e.message ], status: :unprocessable_entity)
   rescue StandardError => e
     # Bắt các lỗi hệ thống khác để API không bị crash trả về HTML
-    render_error(message: "Đã xảy ra lỗi hệ thống", errors: [e.message], status: :internal_server_error)
+    render_error(message: "Đã xảy ra lỗi hệ thống", errors: [ e.message ], status: :internal_server_error)
   end
 
   private
