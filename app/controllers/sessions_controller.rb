@@ -18,7 +18,11 @@ class SessionsController < ApplicationController
         message: "Đăng nhập thành công"
       )
     else
+      # Rate limiting will automatically return 429 if too many attempts
+      # Add a specific error message for invalid credentials
       render_error(message: "Email hoặc mật khẩu không chính xác", status: :unauthorized)
     end
   end
+
+
 end

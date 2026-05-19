@@ -72,3 +72,6 @@ gem "bcrypt", "~> 3.1"
 gem "jwt", "~> 3.2"
 
 gem "bullet", "~> 8.1", group: :development
+
+gem "rack-attack", "~> 6.8"
+gem "rspec-rails", group: [:development, :test]
