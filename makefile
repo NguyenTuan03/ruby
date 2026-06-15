@@ -119,7 +119,7 @@ db-reset:
 # Chạy test suite
 test:
 	@echo "🧪 Đang chạy unit tests..."
-	@bundle exec rails test
+	@bundle exec rspec
 
 # Dọn dẹp logs và tmp files
 clean:
